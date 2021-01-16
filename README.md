@@ -1,1 +1,15 @@
-# avl-tree-lib
+# AVL Tree Lib
+
+## brief
+
+AVL Tree Lib is modern C++ implementation of AVL self balancing search tree algorithm.
+
+## Building
+
+``` bash
+git clone https://github.com/konstantin89/avl-tree-lib
+cd avl-tree-lib
+cd build
+conan install ..
+conan build ..
+```
