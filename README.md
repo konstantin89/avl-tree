@@ -13,3 +13,17 @@ cd build
 conan install ..
 conan build ..
 ```
+
+## AVL Trees Theory
+
+### Right rotation
+![](img/right_rotation.png)
+
+### Left rotation
+![](img/left_rotation.png)
+
+### Right Left rotation
+![](img/right_left_rotation.png)
+
+### Left Right rotation
+![](img/left_right_rotation.png)

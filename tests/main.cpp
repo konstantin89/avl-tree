@@ -4,13 +4,24 @@
 
 #include "avl_tree_lib/AvlTree.hpp"
 
-unsigned int Factorial( unsigned int number ) {
-    return number <= 1 ? number : Factorial(number-1)*number;
+using avl_tree_lib::AvlTree;
+
+TEST_CASE( "Insert with empty root", "[AvlTree]" ) 
+{
+    AvlTree<int> tree;
+
+    auto isValueInserted = tree.Insert(5);
+
+    REQUIRE(true == isValueInserted);
 }
 
-TEST_CASE( "Factorials are computed", "[factorial]" ) {
-    REQUIRE( Factorial(1) == 1 );
-    REQUIRE( Factorial(2) == 2 );
-    REQUIRE( Factorial(3) == 6 );
-    REQUIRE( Factorial(10) == 3628800 );
+TEST_CASE( "Insert value twise", "[AvlTree]" ) 
+{
+    AvlTree<int> tree;
+
+    auto isValueInserted = tree.Insert(5);
+    REQUIRE(true == isValueInserted);
+
+    isValueInserted = tree.Insert(5);
+    REQUIRE(false == isValueInserted);
 }

@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.1.2)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 set(TESTS_BINARY_NAME tests)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-message(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${AVL_TREE_LIB_INCLUDE_PATH})
+
 conan_basic_setup()
 
 add_executable(${TESTS_BINARY_NAME} main.cpp)
