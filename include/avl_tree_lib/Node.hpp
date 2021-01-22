@@ -20,22 +20,32 @@ public:
 
 // TODO - default constructor
 
-Node()
+Node() : Node({}, nullptr, false)
 {
-    m_parent = nullptr;
-    m_left = nullptr;
-    m_right = nullptr;
-    m_data = {};
-    m_height = LEAFS_HEIGHT;
+
 }
 
-Node(DataType data, NodeSharedPtrType parent)
+Node(bool isEnd) : Node({}, nullptr, isEnd)
+{
+
+}
+
+Node(DataType data, NodeSharedPtrType parent) :  
+        Node(data, parent, false)
+{
+
+}
+
+Node(DataType data, 
+     NodeSharedPtrType parent, 
+     bool isEnd)
 {
     m_parent = parent;
     m_left = nullptr;
     m_right = nullptr;
     m_data = data;
     m_height = LEAFS_HEIGHT;
+    m_isEnd = isEnd;
 }
 
 void UpdateHeight()
@@ -56,7 +66,7 @@ void UpdateHeight()
     m_height = std::max(leftChildHeight, rightChildHeight) + 1;
 }
 
-BalanceType GetBalance()
+BalanceType GetBalance() const
 {
     HeightType leftChildHeight = 0;
     HeightType rightChildHeight = 0;
@@ -74,12 +84,19 @@ BalanceType GetBalance()
     return leftChildHeight - rightChildHeight;
 }
 
+bool IsEnd() const
+{
+    return m_isEnd;
+}
+
 NodeSharedPtrType m_parent;
 NodeSharedPtrType m_left;
 NodeSharedPtrType m_right;
 
 DataType m_data;
 HeightType m_height;
+
+bool m_isEnd;
 
 };
 

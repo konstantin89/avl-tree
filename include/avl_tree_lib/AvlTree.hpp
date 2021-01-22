@@ -2,6 +2,7 @@
 #pragma once
 
 #include "avl_tree_lib/Node.hpp"
+#include "avl_tree_lib/AvlTreeIterator.hpp"
 
 namespace avl_tree_lib
 {
@@ -13,6 +14,7 @@ class AvlTree
 public:
     using NodeType = Node<DataType>;
     using NodeSharedPtrType = typename NodeType::NodeSharedPtrType;
+    using AvlTreeIteratorType = AvlTreeIterator<DataType>;
 
 public:
 
@@ -36,9 +38,34 @@ public:
 
     }
 
-    bool Find(DataType data)
+    AvlTreeIteratorType Find(DataType data)
     {
-        return true;
+        auto node = findNodeByData(data, m_root);
+
+        if(nullptr == node)
+        {
+            return End();
+        }
+
+        return AvlTreeIteratorType(node);
+    }
+
+    AvlTreeIteratorType Begin()
+    {
+        if(nullptr == m_root)
+        {
+            return End();
+        }
+
+        auto minNode = getMinOfSubtree(m_root);
+
+        return AvlTreeIteratorType(minNode);
+    }
+
+    AvlTreeIteratorType End()
+    {
+        auto endNode = std::make_shared<NodeType>(true);
+        return AvlTreeIteratorType(endNode);
     }
 
     bool Remove(DataType data)
@@ -84,6 +111,16 @@ protected:
         if(nullptr == m_root)
         {
             m_root = current;
+        }
+
+        else if(current->m_data > parent->m_data)
+        {            
+            parent->m_right = current;
+        }
+
+        else if(current->m_data < parent->m_data)
+        {
+            parent->m_left = current;
         }
 
         return current;
@@ -162,10 +199,45 @@ protected:
         return y;
     }
 
+    NodeSharedPtrType findNodeByData(
+        DataType data, 
+        NodeSharedPtrType root)
+        {
+            if(nullptr == root)
+            {
+                return nullptr;
+            }
+
+            if(data == root->m_data)
+            {
+                return root;
+            }
+
+            if(data > root->m_data)
+            {
+                return findNodeByData(data, root->m_right);
+            }
+            else
+            {
+                return findNodeByData(data, root->m_left);
+            }
+            
+        }
+
+    NodeSharedPtrType getMinOfSubtree(NodeSharedPtrType root)
+    {
+        if(nullptr == root->m_left)
+        {
+            return root;
+        }
+
+        return getMinOfSubtree(root->left);
+    }
+
 private:
 
     NodeSharedPtrType m_root;
-
+    
 };
 
 } // namespace avl_tree_lib

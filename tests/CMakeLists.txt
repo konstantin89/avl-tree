@@ -8,7 +8,9 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
 conan_basic_setup()
 
-add_executable(${TESTS_BINARY_NAME} main.cpp)
+set(TEST_SOURCES main.cpp data_set_tests.cpp basic_tests.cpp)
+
+add_executable(${TESTS_BINARY_NAME} ${TEST_SOURCES})
 
 target_include_directories(
     ${TESTS_BINARY_NAME} PRIVATE 
