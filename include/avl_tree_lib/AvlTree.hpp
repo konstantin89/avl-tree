@@ -15,26 +15,32 @@ public:
     using NodeType = Node<DataType>;
     using NodeSharedPtrType = typename NodeType::NodeSharedPtrType;
     using AvlTreeIteratorType = AvlTreeIterator<DataType>;
+    using SizeType = uint64_t;
 
 public:
 
     AvlTree()
     {
         m_root = nullptr;
+        m_size = 0;
+    }
+
+    SizeType Size()
+    {
+        return m_size;
     }
 
     bool Insert(DataType newData)
     {       
-        auto newNode = insertNode(newData);
+        auto sizeBeforeInsertion = Size();
 
-        if(nullptr == newNode)
-        {
-            return false;
-        }
+        m_root = insertNode(m_root, nullptr, newData);
 
-        balanceNode(newNode->m_parent, newData);
+        auto sizeAfterInsertion = Size();
 
-        return true;
+        bool isValueInserted = sizeBeforeInsertion != sizeAfterInsertion;
+
+        return isValueInserted;
 
     }
 
@@ -81,58 +87,41 @@ protected:
         return std::make_shared<NodeType>(data, parent);
     }
 
-    NodeSharedPtrType insertNode(DataType newData)
+    NodeSharedPtrType insertNode(
+        NodeSharedPtrType node, 
+        NodeSharedPtrType parent, 
+        DataType newData)
     {
-        NodeSharedPtrType current = m_root;
-        NodeSharedPtrType parent = nullptr;
-
-        while(current != nullptr)
+        if(nullptr == node)
         {
-            parent = current;
-
-            if(newData > current->m_data)
-            {            
-                current = current->m_right;
-            }
-
-            else if(newData < current->m_data)
-            {
-                current = current->m_left;
-            }
-            else
-            {
-
-                return nullptr;
-            }
+            m_size++;
+            return createNode(newData, parent);
         }
-
-        current = createNode(newData, parent);
-
-        if(nullptr == m_root)
+        else if(node->m_data > newData)
         {
-            m_root = current;
+            node->m_left = insertNode(node->m_left, node, newData);
         }
-
-        else if(current->m_data > parent->m_data)
-        {            
-            parent->m_right = current;
-        }
-
-        else if(current->m_data < parent->m_data)
+        else if(node->m_data < newData)
         {
-            parent->m_left = current;
+            node->m_right = insertNode(node->m_right, node, newData);
         }
+        else
+        {
+            return node;
+        }
+        
+        node->UpdateHeight();
 
-        return current;
+        auto newRoot = balanceNode(node, newData);
+
+        return newRoot;
     }
 
-    bool balanceNode(
-        NodeSharedPtrType nodeToBalance,
-        DataType newData)
+    NodeSharedPtrType balanceNode(NodeSharedPtrType nodeToBalance, DataType newData)
     {
         if(nullptr == nodeToBalance)
         {
-            return false;
+            return nodeToBalance;
         }
 
         auto balance = nodeToBalance->GetBalance();
@@ -140,42 +129,55 @@ protected:
         // Left rotatrion
         if ((balance > 1) && (newData < nodeToBalance->m_left->m_data))  
         {
-            rotateRight(nodeToBalance);  
+            return rotateRight(nodeToBalance);  
         }
             
         // Right rotatrion
-        if ((balance < -1) && (newData > nodeToBalance->m_right->m_data))  
+        else if ((balance < -1) && (newData > nodeToBalance->m_right->m_data))  
         {
-            rotateLeft(nodeToBalance);  
+            return rotateLeft(nodeToBalance);  
         }
-        
     
         // Left Right rotatrion  
-        if ((balance > 1) && (newData > nodeToBalance->m_left->m_data))  
+        else if ((balance > 1) && (newData > nodeToBalance->m_left->m_data))  
         {  
             nodeToBalance->m_left = rotateLeft(nodeToBalance->m_left);  
-            rotateRight(nodeToBalance);  
+            return rotateRight(nodeToBalance);  
         }  
     
         // Right Left rotatrion  
-        if ((balance < -1) && (newData < nodeToBalance->m_right->m_data))  
+        else if ((balance < -1) && (newData < nodeToBalance->m_right->m_data))  
         {  
             nodeToBalance->m_right = rotateRight(nodeToBalance->m_right);  
-            rotateLeft(nodeToBalance);  
-        }  
+            return rotateLeft(nodeToBalance);  
+        }
 
-        return true;
-
+        // Error case
+        else
+        {
+             return nodeToBalance;
+        }
+        
     }
 
     NodeSharedPtrType rotateLeft(NodeSharedPtrType nodeToRotate)
     {
-        auto z = nodeToRotate;
+        auto z = nodeToRotate;        
         auto y = z->m_right;
-        auto T2 = y->m_right;
+        auto T2 = y->m_left;
+
+        auto zOriginalParent = z->m_parent;
 
         y->m_left = z;
-        z->m_left = T2;
+        y->m_parent = zOriginalParent;
+
+        z->m_right = T2;
+        z->m_parent = y;
+
+        if(nullptr != T2)
+        {
+            T2->m_parent = z;
+        }
 
         y->UpdateHeight();
         z->UpdateHeight();
@@ -187,11 +189,22 @@ protected:
     NodeSharedPtrType rotateRight(NodeSharedPtrType nodeToRotate)
     {
         auto z = nodeToRotate;
+        auto zOriginalParent = z->m_parent;
+
         auto y = z->m_left;
         auto T3 = y->m_right;
 
         y->m_right = z;
+        y->m_parent = zOriginalParent;
+
         z->m_left = T3;
+        z->m_parent = y;
+
+        if(nullptr != T3)
+        {
+            T3->m_parent = z;
+        }
+        
 
         y->UpdateHeight();
         z->UpdateHeight();
@@ -237,6 +250,7 @@ protected:
 private:
 
     NodeSharedPtrType m_root;
+    SizeType m_size;
     
 };
 

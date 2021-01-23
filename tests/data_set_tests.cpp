@@ -16,13 +16,12 @@ TestSet testSet4 = {23,12,54,67,34,23,12,34,45,56,56,56,12,67,45,27,78,105,234};
 
 void testSet(TestSet setValues)
 {
-
-
     AvlTree<int> tree;
 
-    for(auto value : setValues)
+
+    for(uint32_t i=0; i<setValues.size(); i++)
     {
-        tree.Insert(value);
+        tree.Insert(setValues[i]);
     }
 
     for(auto value : setValues)
