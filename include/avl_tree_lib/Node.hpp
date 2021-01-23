@@ -18,7 +18,6 @@ private:
 
 public:
 
-// TODO - default constructor
 
 Node() : Node({}, nullptr, false)
 {

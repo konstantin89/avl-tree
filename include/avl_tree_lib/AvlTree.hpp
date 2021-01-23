@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "avl_tree_lib/Node.hpp"
@@ -12,73 +11,28 @@ class AvlTree
 {
 
 public:
-    using NodeType = Node<DataType>;
-    using NodeSharedPtrType = typename NodeType::NodeSharedPtrType;
+
     using AvlTreeIteratorType = AvlTreeIterator<DataType>;
     using SizeType = uint64_t;
 
 public:
 
-    AvlTree()
-    {
-        m_root = nullptr;
-        m_size = 0;
-    }
+    AvlTree();
 
-    SizeType Size()
-    {
-        return m_size;
-    }
+    SizeType Size();
 
-    bool Insert(DataType newData)
-    {       
-        auto sizeBeforeInsertion = Size();
+    bool Insert(DataType newData);
 
-        m_root = insertNode(m_root, nullptr, newData);
+    AvlTreeIteratorType Find(DataType data);
 
-        auto sizeAfterInsertion = Size();
+    AvlTreeIteratorType Begin();
 
-        bool isValueInserted = sizeBeforeInsertion != sizeAfterInsertion;
+    AvlTreeIteratorType End();
 
-        return isValueInserted;
+private:
 
-    }
-
-    AvlTreeIteratorType Find(DataType data)
-    {
-        auto node = findNodeByData(data, m_root);
-
-        if(nullptr == node)
-        {
-            return End();
-        }
-
-        return AvlTreeIteratorType(node);
-    }
-
-    AvlTreeIteratorType Begin()
-    {
-        if(nullptr == m_root)
-        {
-            return End();
-        }
-
-        auto minNode = getMinOfSubtree(m_root);
-
-        return AvlTreeIteratorType(minNode);
-    }
-
-    AvlTreeIteratorType End()
-    {
-        auto endNode = std::make_shared<NodeType>(true);
-        return AvlTreeIteratorType(endNode);
-    }
-
-    bool Remove(DataType data)
-    {
-        return true;
-    }
-
+    using NodeType = Node<DataType>;
+    using NodeSharedPtrType = typename NodeType::NodeSharedPtrType;
 
 protected:
 
@@ -253,6 +207,68 @@ private:
     SizeType m_size;
     
 };
+
+
+
+template <typename DataType>
+AvlTree<DataType>::AvlTree()
+{
+    m_root = nullptr;
+    m_size = 0;
+}
+
+template <typename DataType>
+typename AvlTree<DataType>::SizeType AvlTree<DataType>::Size()
+{
+    return m_size;
+}
+
+template <typename DataType>
+bool AvlTree<DataType>::Insert(DataType newData)
+{       
+    auto sizeBeforeInsertion = Size();
+
+    m_root = insertNode(m_root, nullptr, newData);
+
+    auto sizeAfterInsertion = Size();
+
+    bool isValueInserted = sizeBeforeInsertion != sizeAfterInsertion;
+
+    return isValueInserted;
+}
+
+template <typename DataType>
+typename AvlTree<DataType>::AvlTreeIteratorType AvlTree<DataType>::Find(DataType data)
+{
+    auto node = findNodeByData(data, m_root);
+
+    if(nullptr == node)
+    {
+        return End();
+    }
+
+    return AvlTreeIteratorType(node);
+}
+
+template <typename DataType>
+typename AvlTree<DataType>::AvlTreeIteratorType AvlTree<DataType>::Begin()
+{
+    if(nullptr == m_root)
+    {
+        return End();
+    }
+
+    auto minNode = getMinOfSubtree(m_root);
+
+    return AvlTreeIteratorType(minNode);
+}
+
+template <typename DataType>
+typename AvlTree<DataType>::AvlTreeIteratorType AvlTree<DataType>::End()
+{
+    auto endNode = std::make_shared<NodeType>(true);
+    return AvlTreeIteratorType(endNode);
+}
 
 } // namespace avl_tree_lib
 
