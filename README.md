@@ -8,8 +8,9 @@ AVL Tree Lib is modern C++ template implementation of AVL self balancing search 
 ## Building
 
 ``` bash
-git clone https://github.com/konstantin89/avl-tree-lib
-cd avl-tree-lib
+git clone https://github.com/konstantin89/avl-tree
+cd avl-tree
+mkdir build
 cd build
 conan install ..
 conan build ..
@@ -18,13 +19,12 @@ conan build ..
 ## Running unit tests
 
 ``` bash
-git clone https://github.com/konstantin89/avl-tree-lib
-cd avl-tree-lib
+git clone https://github.com/konstantin89/avl-tree
+cd avl-tree
 cd build
 conan install ..
 conan build ..
 ./tests/bin/tests
-
 ```
 
 ## AVL Trees Theory

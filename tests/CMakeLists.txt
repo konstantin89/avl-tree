@@ -12,6 +12,8 @@ set(TEST_SOURCES main.cpp data_set_tests.cpp basic_tests.cpp)
 
 add_executable(${TESTS_BINARY_NAME} ${TEST_SOURCES})
 
+target_link_libraries(${TESTS_BINARY_NAME} PRIVATE ${CONAN_LIBS})
+
 target_include_directories(
     ${TESTS_BINARY_NAME} PRIVATE 
     ${CONAN_INCLUDE_DIRS}

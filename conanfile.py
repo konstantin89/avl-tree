@@ -15,6 +15,5 @@ class HelloConan(ConanFile):
         cmake.configure(source_folder=".")
         cmake.build()
 
-
     def build_requirements(self):
-        self.build_requires("Catch2/2.11.1@catchorg/stable")
+        self.build_requires("catch2/3.4.0")
